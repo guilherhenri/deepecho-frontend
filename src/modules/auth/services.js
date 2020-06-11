@@ -1,4 +1,4 @@
 export default {
-  login: { method: 'post', url: 'login' },
+  login: { method: 'get', url: 'users' },
   loadSession: { method: 'get', url: 'load-session' },
 };

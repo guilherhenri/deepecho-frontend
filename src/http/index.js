@@ -9,6 +9,8 @@ const { http } = Vue;
 
 http.options.root = 'http://198.211.97.79:3000/database/';
 
+http.headers['Content-Type'] = 'application/json;charset=utf-8';
+
 Object.keys(services).map((service) => {
   services[service] = Vue.resource('', {}, services[service]);
 });

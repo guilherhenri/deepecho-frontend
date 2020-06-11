@@ -2,11 +2,10 @@ import * as types from './mutation-types';
 import * as storage from '../storage';
 import services from '../../../http';
 
-export const ActionLogin = async ({ dispatch }, payload) => {
-  const response = await services.auth.login(payload);
-
-  dispatch('ActionSetUser', response.data.user);
-  dispatch('ActionSetToken', response.data.token);
+export const ActionLogin = async ({ commit }) => {
+  const response = await services.auth.login();
+  console.log(response.data);
+  commit();
 };
 
 export const ActionCheckToken = ({ dispatch, state }) => {
