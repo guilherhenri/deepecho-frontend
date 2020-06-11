@@ -2,13 +2,25 @@ import * as types from './mutation-types';
 import * as storage from '../storage';
 import services from '../../../http';
 
-export const ActionLogin = async ({ commit }) => {
+export const ActionLogin = async ({ dispatch }, payload) => {
   const response = await services.auth.login();
-  console.log(response.data);
-  commit();
+
+  const userExists = response.data.body.users.findIndex(user => (
+    user.username === payload.username
+  ));
+
+  if (userExists >= 0) {
+    const user = response.data.body.users[userExists];
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikd1aWxoZXJtZSBIZW5yaXF1ZSIsImlhdCI6MTUxNjIzOTAyMn0.bl0qzVDPsbX5-tZ9lrBzA8FraebkRbeHYb7JKcMZF5Y';
+
+    dispatch('ActionSetToken', token);
+    dispatch('ActionSetUser', user);
+    return true;
+  }
+  throw new Error();
 };
 
-export const ActionCheckToken = ({ dispatch, state }) => {
+export const ActionCheckSession = ({ dispatch, state }) => {
   if (state.token) {
     return Promise.resolve(state.token);
   }
@@ -20,25 +32,22 @@ export const ActionCheckToken = ({ dispatch, state }) => {
   }
 
   dispatch('ActionSetToken', token);
-  return dispatch('ActionLoadSession');
+
+  if (state.user) {
+    return Promise.resolve(state.user);
+  }
+
+  const user = storage.getLocalUser();
+
+  if (!user) {
+    return Promise.reject(new Error('User invalido'));
+  }
+
+  return dispatch('ActionSetUser', user);
 };
 
-// Trocar isso por salvar o usuario
-
-export const ActionLoadSession = ({ dispatch }) => new Promise(async (resolve, reject) => {
-  try {
-    const { data: { user } } = await services.auth.loadSession();
-
-    dispatch('ActionSetUser', user);
-
-    resolve();
-  } catch (err) {
-    dispatch('ActionSignOut');
-    reject(err);
-  }
-});
-
 export const ActionSetUser = ({ commit }, payload) => {
+  storage.setLocalUser(payload);
   commit(types.SET_USER, payload);
 };
 
@@ -51,6 +60,7 @@ export const ActionSetToken = ({ commit }, payload) => {
 export const ActionSignOut = ({ dispatch }) => {
   storage.setHeaderToken('');
   storage.deleteLocalToken();
+  storage.deleteLocalUser();
   dispatch('ActionSetUser', {});
   dispatch('ActionSetToken', '');
 };

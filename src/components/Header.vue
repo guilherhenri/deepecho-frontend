@@ -4,12 +4,16 @@
         <aside>
           <div class="profile">
             <div>
-              <strong>Guilherme Henrique</strong>
+              <strong>{{ user.full_name }}</strong>
 
-              <a href="#">Meu perfil</a>
+              <router-link
+                :to="{ name: 'profile' }"
+              >
+                Meu perfil
+              </router-link>
             </div>
 
-            <a href="index.html">Sair</a>
+            <a @click="logout" href="#">Sair</a>
           </div>
         </aside>
       </div>
@@ -17,7 +21,24 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
+
 export default {
+  methods: {
+    ...mapActions('auth', ['ActionSignOut']),
+    logout() {
+      try {
+        this.ActionSignOut();
+
+        this.$router.push({ name: 'login' });
+      } catch (err) {
+        alert(err.data ? err.data.message : 'Erro ao fazer logout');
+      }
+    },
+  },
+  computed: {
+    ...mapState('auth', ['user']),
+  },
 };
 </script>
 

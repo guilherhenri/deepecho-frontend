@@ -7,9 +7,9 @@
 
       <input
         type="text"
-        v-model="form.email"
-        :class="{ active: form.email !== ''}"
-        placeholder="E-mail"
+        v-model="form.username"
+        :class="{ active: form.username !== ''}"
+        placeholder="Username"
         required
       >
 
@@ -34,7 +34,7 @@ export default {
   data: () => ({
     logo,
     form: {
-      email: '',
+      username: '',
       password: '',
     },
   }),
@@ -44,7 +44,7 @@ export default {
       try {
         await this.ActionLogin(this.form);
 
-        this.$router.push({ name: 'home' });
+        this.$router.push({ name: 'dashboard' });
       } catch (err) {
         alert(err.data ? err.data.message : 'Usuario nao encontrado');
       }

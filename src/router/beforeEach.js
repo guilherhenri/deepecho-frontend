@@ -5,9 +5,8 @@ export default async (to, from, next) => {
 
   if (to.name !== 'login' && !store.getters['auth/hasToken']) {
     try {
-      await store.dispatch('auth/ActionCheckToken');
+      await store.dispatch('auth/ActionCheckSession');
 
-      // check user
       next({ path: to.path });
     } catch (err) {
       next({ name: 'login' });
