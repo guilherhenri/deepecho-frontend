@@ -1,0 +1,1 @@
+export const SET_INBOX = 'DASHBOARD/SET_INBOX';

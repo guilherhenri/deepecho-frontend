@@ -4,7 +4,7 @@
 
     <div v-if="show" class="main">
       <header-menu />
-      <router-view />
+      <router-view class="container" />
     </div>
 
     <router-view v-else/>
@@ -43,6 +43,7 @@ export default {
     display: flex;
     height: 100vh;
     background: rgb(212, 208, 214);
+    overflow: hidden;
 
     .main {
       width: 100%;

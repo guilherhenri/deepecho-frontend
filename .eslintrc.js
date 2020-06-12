@@ -19,6 +19,8 @@ module.exports = {
     'no-lonely-if': 'off',
     'no-underscore-dangle': 'off',
     'import/extensions': 'off',
-    'arrow-parens': 'off'
+    'arrow-parens': 'off',
+    'vue/no-parsing-error': 'off',
+    'no-plusplus': 'off'
   },
 };

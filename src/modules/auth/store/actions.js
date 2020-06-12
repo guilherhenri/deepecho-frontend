@@ -20,7 +20,10 @@ export const ActionLogin = async ({ dispatch }, payload) => {
   throw new Error();
 };
 
-export const ActionCheckSession = ({ dispatch, state }) => {
+export const ActionCheckToken = ({ dispatch, state }) => {
+  const user = storage.getLocalUser();
+  dispatch('ActionSetUser', user);
+
   if (state.token) {
     return Promise.resolve(state.token);
   }
@@ -31,19 +34,7 @@ export const ActionCheckSession = ({ dispatch, state }) => {
     return Promise.reject(new Error('Token invalido'));
   }
 
-  dispatch('ActionSetToken', token);
-
-  if (state.user) {
-    return Promise.resolve(state.user);
-  }
-
-  const user = storage.getLocalUser();
-
-  if (!user) {
-    return Promise.reject(new Error('User invalido'));
-  }
-
-  return dispatch('ActionSetUser', user);
+  return dispatch('ActionSetToken', token);
 };
 
 export const ActionSetUser = ({ commit }, payload) => {
@@ -61,6 +52,6 @@ export const ActionSignOut = ({ dispatch }) => {
   storage.setHeaderToken('');
   storage.deleteLocalToken();
   storage.deleteLocalUser();
-  dispatch('ActionSetUser', {});
+  dispatch('ActionSetUser', '');
   dispatch('ActionSetToken', '');
 };
